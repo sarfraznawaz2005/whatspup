@@ -164,7 +164,7 @@ process.setMaxListeners(0);
 
     async function isLastMessageRead(name, message) {
 
-      if (message == last_sent_message || !message) {
+      if (message == last_sent_message) {
         return;
       }
 
@@ -189,10 +189,7 @@ process.setMaxListeners(0);
       }
 
       last_sent_message = message;
-
-    }
-
-    setInterval(readLastOtherPersonMessage, (config.check_message_interval * 1000))
+    }    
 
     function print(message, type = null) {
 
@@ -220,6 +217,8 @@ process.setMaxListeners(0);
       }
 
     }
+
+    setInterval(readLastOtherPersonMessage, (config.check_message_interval * 1000))
 
     //await browser.close();
 
