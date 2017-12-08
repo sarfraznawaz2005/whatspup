@@ -1,0 +1,20 @@
+{
+  "name": "whatsappnode",
+  "version": "1.0.0",
+  "description": "An application to use whatsapp via cli",
+  "main": "chat.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "whatsapp",
+    "node"
+  ],
+  "author": "Sarfraz Ahmed",
+  "license": "MIT",
+  "dependencies": {
+    "node-notifier": "^5.1.2",
+    "puppeteer": "^0.13.0",
+    "winston": "^2.4.0"
+  }
+}

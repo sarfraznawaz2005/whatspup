@@ -1,0 +1,5 @@
+node_modules/
+tmp/
+logs/
+package-lock.json
+todo.txt
