@@ -56,6 +56,8 @@ process.setMaxListeners(0);
 
     startChat(user);
 
+    notifier.notify('You can chat now :-)');
+
     print('You can chat now :-)', 'header');
     print('Press Ctrl+C twice to exit any time.', 'error');
 
@@ -133,28 +135,27 @@ process.setMaxListeners(0);
           if (last_received_message != message) {
             last_received_message = message;
             print(name + ": " + message, 'success');
+
+            // show notification
+
+            if (config.notification_enabled) {
+              let notifContent = config.notification_hide_message ? 'New Message Received' : message;
+
+              notifier.notify({
+                title: name,
+                message: notifContent,
+                wait: true,
+                sound: config.notification_sound,
+                timeout: config.notification_time
+              });
+
+            }
           }
         }
         else {
           last_received_message = message;
-          print(name + ": " + message, 'success');
+          //print(name + ": " + message, 'success');
         }
-
-        // show notification
-
-        if (config.notification_enabled) {
-          let notifContent = config.notification_hide_message ? 'New Message Received' : message;
-
-          notifier.notify({
-            title: name,
-            message: notifContent,
-            wait: true,
-            sound: config.notification_sound,
-            timeout: config.notification_time
-          });
-          
-        }
-
 
       }
 
