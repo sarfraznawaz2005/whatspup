@@ -102,8 +102,7 @@ process.setMaxListeners(0);
       }, selector.last_message_sent);
 
       if (message == messageSent) {
-        print("You: " + message, 'warning');
-        sentMessages.push(message);
+        print("You: " + message, 'warning');        
 
         if (config.read_receipts) {
           last_sent_message_interval = setInterval(function () {
@@ -203,6 +202,8 @@ process.setMaxListeners(0);
 
           if (!sentMessages.includes(msg)) {
             print(msg, 'info');
+            
+            sentMessages.push(msg);
           }
         }
       }
