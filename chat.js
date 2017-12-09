@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin / env node
 
 const puppeteer = require('puppeteer');
 const notifier = require('node-notifier');
@@ -40,7 +40,7 @@ process.setMaxListeners(0);
 
 
     let last_received_message = '';
-    let last_sent_message = '';
+    let last_sent_message_interval = null;
 
 
     const page = await browser.newPage();
@@ -56,8 +56,6 @@ process.setMaxListeners(0);
 
     startChat(user);
 
-    notifier.notify('You can chat now :-)');
-
     print('You can chat now :-)', 'header');
     print('Press Ctrl+C twice to exit any time.', 'error');
 
@@ -70,6 +68,7 @@ process.setMaxListeners(0);
 
         if (new_user) {
           startChat(new_user);
+          user = new_user;
         }
       }
       else {
@@ -103,13 +102,20 @@ process.setMaxListeners(0);
 
       if (message == messageSent) {
         print("You: " + message, 'warning');
+
+        if (config.read_receipts) {
+          last_sent_message_interval = setInterval(function () {
+            isLastMessageRead(user, message);
+          }, (config.check_message_interval * 1000));
+        }
+
       }
 
       // see if they sent a new message
-      readLastOtherPersonMessage(message);
+      readLastOtherPersonMessage();
     }
 
-    async function readLastOtherPersonMessage(sentMessage) {
+    async function readLastOtherPersonMessage() {
 
       let name = await page.evaluate((selector) => {
         let el = document.querySelector(selector);
@@ -139,12 +145,22 @@ process.setMaxListeners(0);
             // show notification
 
             if (config.notification_enabled) {
-              let notifContent = config.notification_hide_message ? 'New Message Received' : message;
+
+              let notifContent = message;
+              let notifName = name;
+
+              if (config.notification_hide_message) {
+                notifContent = config.notification_hidden_message || 'New Message Received';
+              }
+
+              if (config.notification_hide_user) {
+                notifName = config.notification_hidden_user || 'Someone';
+              }
 
               notifier.notify({
-                title: name,
+                title: notifName,
                 message: notifContent,
-                wait: true,
+                wait: false,
                 sound: config.notification_sound,
                 timeout: config.notification_time
               });
@@ -154,19 +170,13 @@ process.setMaxListeners(0);
         }
         else {
           last_received_message = message;
-          //print(name + ": " + message, 'success');
+          print(name + ": " + message, 'success');
         }
 
       }
-
-      isLastMessageRead(name, sentMessage);
     }
 
     async function isLastMessageRead(name, message) {
-
-      if (message == last_sent_message) {
-        return;
-      }
 
       let is_last_message_read = await page.evaluate((selector) => {
 
@@ -184,12 +194,15 @@ process.setMaxListeners(0);
         return false;
       }, selector.last_message_read);
 
-      if (is_last_message_read) {
-        print('Your last message was read by ' + name, 'info');
+      if (is_last_message_read) {      
+        if (config.read_receipts && last_sent_message_interval) {
+          print('"' + message + '" was read by ' + name, 'info');          
+          clearInterval(last_sent_message_interval);
+        }
+
       }
 
-      last_sent_message = message;
-    }    
+    }
 
     function print(message, type = null) {
 

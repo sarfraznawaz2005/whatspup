@@ -24,6 +24,9 @@ module.exports = {
     // If true, colored messages will be shown
     colors: true,
 
+    // If true, your last message sent will be notified when read by other user
+    read_receipts: true,
+
     ////////////////////////////////////////////////////////////////
     // CHAT NOTIFICATION SETTINGS
     ////////////////////////////////////////////////////////////////
@@ -33,6 +36,15 @@ module.exports = {
 
     // Hide or show chat message in notification
     notification_hide_message: false,
+
+    // If notification_hide_message is TRUE, this content will be shown in notification for user's message
+    notification_hidden_message: "New Message Received",
+
+    // Hide or show chat user name in notification
+    notification_hide_user: false,
+
+    // If notification_hide_user is TRUE, this content will be shown in notification for user's name
+    notification_hidden_user: "Someone",
 
     // Reply directly via notification or not
     // TODO: Work in progress
