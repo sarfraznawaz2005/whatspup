@@ -202,13 +202,14 @@ process.setMaxListeners(0);
 
           if (!sentMessages.includes(msg)) {
             print(msg, 'info');
-            
+
             sentMessages.push(msg);
+
+            clearInterval(last_sent_message_interval);
           }
         }
       }
-
-      clearInterval(last_sent_message_interval);
+      
     }
 
     function print(message, type = null) {
