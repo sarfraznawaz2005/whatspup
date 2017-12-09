@@ -8,7 +8,7 @@ const fs = require('fs');
 const config = require('./config.js');
 const selector = require('./selector.js');
 
-const user = process.argv[2];
+let user = process.argv[2];
 
 // make sure they specified user to chat with
 if (!user) {
