@@ -41,6 +41,7 @@ process.setMaxListeners(0);
 
     let last_received_message = '';
     let last_sent_message_interval = null;
+    let sentMessages = [];
 
 
     const page = await browser.newPage();
@@ -102,6 +103,7 @@ process.setMaxListeners(0);
 
       if (message == messageSent) {
         print("You: " + message, 'warning');
+        sentMessages.push(message);
 
         if (config.read_receipts) {
           last_sent_message_interval = setInterval(function () {
@@ -194,14 +196,18 @@ process.setMaxListeners(0);
         return false;
       }, selector.last_message_read);
 
-      if (is_last_message_read) {      
+      if (is_last_message_read) {
         if (config.read_receipts && last_sent_message_interval) {
-          print('"' + message + '" was read by ' + name, 'info');          
-          clearInterval(last_sent_message_interval);
-        }
+          let msg = '"' + message + '" was read by ' + name;
+          // make sure we don't report for same message again
 
+          if (!sentMessages.includes(msg)) {
+            print(msg, 'info');
+          }
+        }
       }
 
+      clearInterval(last_sent_message_interval);
     }
 
     function print(message, type = null) {
