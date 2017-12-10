@@ -28,6 +28,7 @@ Of course, it is not possible to send/receive picture messsages from command lin
 - Clone this repository. `git clone https://github.com/sarfraznawaz2005/whatspup.git`
 - Type `npm install`
 - Type `node chat.js USERNAME`
+- Scan Whatsapp QR Code once
 - Wait for connection and start typing your messages :smile:
 
 You can switch chat with another user anytime by typing on console:
