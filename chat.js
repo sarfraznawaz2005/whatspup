@@ -8,6 +8,7 @@ const fs = require('fs');
 const config = require('./config.js');
 const selector = require('./selector.js');
 
+// get user from command line argument
 let user = process.argv[2];
 
 // make sure they specified user to chat with
@@ -24,6 +25,14 @@ process.setMaxListeners(0);
 
   try {
 
+    // custom vars ///////////////////////////////
+    let last_received_message = '';
+    let last_sent_message_interval = null;
+    let last_new_message_interval = null;
+    let sentMessages = [];
+    let newMessages = [];
+    //////////////////////////////////////////////    
+
     const timeout = 3000000;
     const networkIdleTimeout = 10000;
     const stdin = process.stdin;
@@ -38,56 +47,66 @@ process.setMaxListeners(0);
       args: ['--disable-infobars']
     });
 
-
-    let last_received_message = '';
-    let last_sent_message_interval = null;
-    let sentMessages = [];
-
-
     const page = await browser.newPage();
 
-    // specify user agent
+    // set user agent
     await page.setUserAgent('Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36');
 
     print('Loading...', 'info');
     await page.goto('https://web.whatsapp.com/', { waitUntil: 'networkidle2' });
 
-    await page.waitFor(30000); // doesn't always work
-    //await page.waitFor(selector.user_chat);
+    //await page.waitFor(30000); // doesn't always work
 
     startChat(user);
 
-    print('You can chat now :-)', 'header');
-    print('Press Ctrl+C twice to exit any time.', 'error');
+    readCommands();
 
-    stdin.resume();
-    stdin.on('data', function (data) {
-      let message = data.toString().trim();
-
-      if (message.indexOf('--chat') > -1) {
-        let new_user = message.split(" ")[1];
-
-        if (new_user) {
-          startChat(new_user);
-          user = new_user;
-        }
-      }
-      else {
-        typeMessage(message);
-      }
-
+    // allow user to type on console and read it
+    function readCommands() {
       stdin.resume();
-    });
+      stdin.on('data', function (data) {
+        let message = data.toString().trim();
 
+        // check for command "--chat UserName" to start new chat with that user
+        if (message.toLowerCase().indexOf('--chat') > -1) {
+          let new_user = message.split(" ")[1];
+
+          if (new_user) {
+            startChat(new_user);
+            user = new_user;
+          }
+        }
+        else {
+          typeMessage(message);
+        }
+
+        stdin.resume();
+      });
+    }
+
+    // start chat with specified user
     async function startChat(user) {
       // replace selector with selected user
       let user_chat_selector = selector.user_chat;
       user_chat_selector = user_chat_selector.replace('XXX', user);
 
-      await page.click(user_chat_selector);
-      await page.click(selector.chat_input);
+      await page.waitFor(user_chat_selector);
+
+      let name = getCurrentUserName();
+
+      if (name) {
+        await page.click(user_chat_selector);
+        await page.click(selector.chat_input);
+
+        print('You can chat now :-)', 'header');
+        print('Press Ctrl+C twice to exit any time.', 'error');
+      }
+      else {
+        print('Could not find specified user "' + user + '"in chat threads', 'error');
+      }
     }
 
+    // type user-supplied message into chat window for selected user
     async function typeMessage(message) {
       await page.keyboard.type(message);
       await page.keyboard.press('Enter');
@@ -102,8 +121,9 @@ process.setMaxListeners(0);
       }, selector.last_message_sent);
 
       if (message == messageSent) {
-        print("You: " + message, 'warning');        
+        print("You: " + message, 'warning');
 
+        // setup interval for read receipts
         if (config.read_receipts) {
           last_sent_message_interval = setInterval(function () {
             isLastMessageRead(user, message);
@@ -116,13 +136,19 @@ process.setMaxListeners(0);
       readLastOtherPersonMessage();
     }
 
-    async function readLastOtherPersonMessage() {
-
-      let name = await page.evaluate((selector) => {
+    // read user's name from conversation thread
+    async function getCurrentUserName() {
+      return await page.evaluate((selector) => {
         let el = document.querySelector(selector);
 
         return el ? el.innerText : '';
       }, selector.user_name);
+    }
+
+    // read any new messages sent by specified user
+    async function readLastOtherPersonMessage() {
+
+      let name = await getCurrentUserName();
 
       if (!name) {
         name = user;
@@ -144,7 +170,6 @@ process.setMaxListeners(0);
             print(name + ": " + message, 'success');
 
             // show notification
-
             if (config.notification_enabled) {
 
               let notifContent = message;
@@ -177,6 +202,7 @@ process.setMaxListeners(0);
       }
     }
 
+    // checks if last message sent is read
     async function isLastMessageRead(name, message) {
 
       let is_last_message_read = await page.evaluate((selector) => {
@@ -197,9 +223,9 @@ process.setMaxListeners(0);
 
       if (is_last_message_read) {
         if (config.read_receipts && last_sent_message_interval) {
-          let msg = '"' + message + '" was read by ' + name;
-          // make sure we don't report for same message again
+          let msg = 'READ: "' + message + '"';
 
+          // make sure we don't report for same message again
           if (!sentMessages.includes(msg)) {
             print(msg, 'info');
 
@@ -209,9 +235,15 @@ process.setMaxListeners(0);
           }
         }
       }
-      
+
     }
 
+    // checks for any new messages sent by all other users
+    async function checkNewMessagesAllUsers() {
+      // todo
+    }
+
+    // prints on console
     function print(message, type = null) {
 
       if (!config.colors) {
@@ -248,6 +280,7 @@ process.setMaxListeners(0);
     logger.warn(err);
   }
 
+  // setup logging
   function setUpLogging() {
 
     const env = process.env.NODE_ENV || 'development';

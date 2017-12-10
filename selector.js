@@ -17,6 +17,11 @@ module.exports = {
     last_message_read: '#main div.message-out.message-chat div.bubble-text-meta div.status-icon:last-child',
 
     // gets username for conversation thread
-    user_name: '#main > header > div.chat-body > div > div > span'
+    user_name: '#main > header > div.chat-body > div > div > span',
+
+    // checks if there are new messages by any users
+    unread_message: '#pane-side div.chat.unread',
+    new_message: '#pane-side div.chat.unread div.chat-status span.emojitext',
+    new_message_user: '#pane-side div.chat.unread div.chat-title span.emojitext'
 
 }
