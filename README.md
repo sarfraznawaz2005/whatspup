@@ -1,5 +1,5 @@
 # Whatspup
-Use Whatsapp from commandline/console/cli using GoogleChrome puppeteer! :smile:
+Use Whatsapp from commandline/console/cli using [GoogleChrome puppeteer!](https://github.com/GoogleChrome/puppeteer) :smile:
 
 ## Features ##
 
