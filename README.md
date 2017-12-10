@@ -23,6 +23,8 @@ Of course, it is not possible to send/receive picture messsages from command lin
 - Node v8+
 - puppeteer v0.13.0+
 
+Tested on Windows with Node v5.10.1 and puppeteer v0.13.0
+
 ## Installation ##
 
 - Clone this repository. `git clone https://github.com/sarfraznawaz2005/whatspup.git`
@@ -33,6 +35,8 @@ Of course, it is not possible to send/receive picture messsages from command lin
 
 You can switch chat with another user anytime by typing on console:
 `--chat USERNAME`
+
+NOTE: `USERNAME` is supposed to be a person with whom you have already intitiated a conversation in whatsapp. In other words, we use a selector to click that user's name from conversations list.
 
 ## Options ##
 
