@@ -44,22 +44,37 @@ process.setMaxListeners(0);
       userDataDir: config.data_dir,
       timeout: timeout,
       networkIdleTimeout: networkIdleTimeout,
-      args: ['--disable-infobars']
+      args: [
+        '--disable-infobars',
+        '--window-position=0,0',
+        '--ignore-certificate-errors',
+        '--ignore-certificate-errors-spki-list '        
+      ]
+    });
+
+    process.on("unhandledRejection", (reason, p) => {
+      //console.error("Unhandled Rejection at: Promise", p, "reason:", reason);
+      logger.warn(reason);
+      //browser.close();
     });
 
     const page = await browser.newPage();
 
     // set user agent
-    await page.setUserAgent('Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36');
+    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36');
 
     print('Loading...', 'info');
-    await page.goto('https://web.whatsapp.com/', { waitUntil: 'networkidle2' });
+    //await page.goto('https://web.whatsapp.com/', { timeout: 0 });
 
-    //await page.waitFor(30000); // doesn't always work
+    page.goto('https://web.whatsapp.com/', {waitUntil: 'load', timeout: 0}).then(async function(response) {
+      //print('Whatsapp loaded...', 'info');
 
-    startChat(user);
-
-    readCommands();
+      await page.waitFor(50000); // doesn't always work
+      
+      startChat(user);
+  
+      readCommands();      
+    })
 
     // allow user to type on console and read it
     function readCommands() {
@@ -91,13 +106,12 @@ process.setMaxListeners(0);
       user_chat_selector = user_chat_selector.replace('XXX', user);
 
       await page.waitFor(user_chat_selector);
-
+      await page.click(user_chat_selector);
+      await page.click(selector.chat_input);
+      
       let name = getCurrentUserName();
 
       if (name) {
-        await page.click(user_chat_selector);
-        await page.click(selector.chat_input);
-
         print('You can chat now :-)', 'header');
         print('Press Ctrl+C twice to exit any time.', 'error');
       }
