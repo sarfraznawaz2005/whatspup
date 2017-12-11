@@ -12,7 +12,7 @@ Use Whatsapp from commandline/console/cli using [GoogleChrome puppeteer!](https:
 - :white_check_mark: Windowless/headless (hidden) mode
 - :white_check_mark: Colorful chat messages
 
-Of course, it is not possible to send/receive picture messsages from command line.
+Of course, it is not possible to send/receive picture messages from command line.
 
 ## Screenshot ##
 
@@ -36,7 +36,7 @@ Tested on Windows with Node v8.9.1 and puppeteer v0.13.0
 You can switch chat with another user anytime by typing on console:
 `--chat USERNAME`
 
-NOTE: `USERNAME` is supposed to be a person with whom you have already intitiated a conversation in whatsapp. In other words, we use a selector to click that user's name from conversations list.
+NOTE: `USERNAME` is supposed to be a person with whom you have already initiated a conversation in whatsapp. In other words, we use a selector to click that user's name from conversations list.
 
 ## Options ##
 
@@ -52,4 +52,4 @@ You are welcome to contribute to this project.
 
 ## Disclaimer ##
 
-This project is not affiliated with offical whatsapp in any sense.
+This project is not affiliated with official whatsapp in any sense.

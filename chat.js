@@ -57,7 +57,7 @@ process.setMaxListeners(0);
     const page = await browser.newPage();
 
     // set user agent
-    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36');
+    await page.setUserAgent('Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3264.0 Safari/537.36');
 
     print('Loading...', 'info');
 
@@ -65,6 +65,8 @@ process.setMaxListeners(0);
       //print('Whatsapp loaded...', 'info');
 
       await page.waitFor(networkIdleTimeout);
+
+      //debug(page);
 
       startChat(user);
 
@@ -289,8 +291,11 @@ process.setMaxListeners(0);
     logger.warn(err);
   }
 
-  async function debug() {
-    console.log(await page.content());
+  async function debug(page, logContent = true) {
+    if (logContent) {
+      console.log(await page.content());
+    }
+
     await page.screenshot({ path: 'screen.png' });
   }
 
