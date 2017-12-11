@@ -38,6 +38,8 @@ You can switch chat with another user anytime by typing on console:
 
 NOTE: `USERNAME` is supposed to be a person with whom you have already initiated a conversation in whatsapp. In other words, we use a selector to click that user's name from conversations list.
 
+If `USERNAME` contains space, you should specify it in double quotes instead like: `node chat.js Foo Bar`
+
 ## Options ##
 
 You can set various options in `config.js` file.
