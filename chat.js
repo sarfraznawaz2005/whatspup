@@ -33,8 +33,7 @@ process.setMaxListeners(0);
     let newMessages = [];
     //////////////////////////////////////////////    
 
-    const timeout = 3000000;
-    const networkIdleTimeout = 10000;
+    const networkIdleTimeout = 50000;
     const stdin = process.stdin;
     const stdout = process.stdout;
     const headless = !config.window;
@@ -42,20 +41,17 @@ process.setMaxListeners(0);
     const browser = await puppeteer.launch({
       headless: headless,
       userDataDir: config.data_dir,
-      timeout: timeout,
-      networkIdleTimeout: networkIdleTimeout,
       args: [
         '--disable-infobars',
         '--window-position=0,0',
         '--ignore-certificate-errors',
-        '--ignore-certificate-errors-spki-list '        
+        '--ignore-certificate-errors-spki-list '
       ]
     });
 
     process.on("unhandledRejection", (reason, p) => {
-      //console.error("Unhandled Rejection at: Promise", p, "reason:", reason);
       logger.warn(reason);
-      //browser.close();
+      //console.error("Unhandled Rejection at: Promise", p, "reason:", reason);
     });
 
     const page = await browser.newPage();
@@ -64,16 +60,15 @@ process.setMaxListeners(0);
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36');
 
     print('Loading...', 'info');
-    //await page.goto('https://web.whatsapp.com/', { timeout: 0 });
 
-    page.goto('https://web.whatsapp.com/', {waitUntil: 'load', timeout: 0}).then(async function(response) {
+    page.goto('https://web.whatsapp.com/', { waitUntil: 'networkidle2', timeout: 0 }).then(async function (response) {
       //print('Whatsapp loaded...', 'info');
 
-      await page.waitFor(50000); // doesn't always work
-      
+      await page.waitFor(networkIdleTimeout);
+
       startChat(user);
-  
-      readCommands();      
+
+      readCommands();
     })
 
     // allow user to type on console and read it
@@ -108,7 +103,7 @@ process.setMaxListeners(0);
       await page.waitFor(user_chat_selector);
       await page.click(user_chat_selector);
       await page.click(selector.chat_input);
-      
+
       let name = getCurrentUserName();
 
       if (name) {
@@ -285,13 +280,18 @@ process.setMaxListeners(0);
 
     }
 
-    setInterval(readLastOtherPersonMessage, (config.check_message_interval * 1000))
+    setInterval(readLastOtherPersonMessage, (config.check_message_interval * 1000));
 
     //await browser.close();
 
   } catch (err) {
     //console.error(err);
     logger.warn(err);
+  }
+
+  async function debug() {
+    console.log(await page.content());
+    await page.screenshot({ path: 'screen.png' });
   }
 
   // setup logging
