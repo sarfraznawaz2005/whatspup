@@ -81,7 +81,7 @@ process.setMaxListeners(0);
 
         // check for command "--chat UserName" to start new chat with that user
         if (message.toLowerCase().indexOf('--chat') > -1) {
-          let new_user = message.split(" ")[1];
+          let new_user = message.split(" ").slice(1).join(" ");
 
           if (new_user) {
             startChat(new_user);
