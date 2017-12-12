@@ -207,7 +207,7 @@ process.setMaxListeners(0);
         }
         else {
           last_received_message = message;
-          print(name + ": " + message, 'success');
+          //print(name + ": " + message, 'success');
         }
 
       }
