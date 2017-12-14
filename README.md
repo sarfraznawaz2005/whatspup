@@ -34,7 +34,7 @@ Tested on Windows with Node v8.9.1 and puppeteer v0.13.0
 - Wait for connection and start typing your messages :smile:
 
 You can switch chat with another user anytime by typing on console:
-`--chat USERNAME`
+`--chat USERNAME` (case-sensitive)
 
 NOTE: `USERNAME` is supposed to be a person with whom you have already initiated a conversation in whatsapp. In other words, we use a selector to click that user's name from conversations list.
 
