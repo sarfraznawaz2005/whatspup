@@ -102,6 +102,9 @@ process.setMaxListeners(0);
             console.log(logSymbols.error, chalk.red('user name not specified!'));
           }
         }
+        else if (message.toLowerCase().indexOf('--clear') > -1) {
+          process.stdout.write('\x1Bc');
+        }
         else {
           typeMessage(message);
         }
