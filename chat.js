@@ -253,7 +253,7 @@ process.setMaxListeners(0);
         if (config.read_receipts && last_sent_message_interval) {
           // make sure we don't report for same message again
           if (!sentMessages.includes(message)) {
-            console.log(logSymbols.success, chalk.gray(message));
+            console.log(logSymbols.success, chalk.gray('\n' + message));
 
             sentMessages.push(message);
 
