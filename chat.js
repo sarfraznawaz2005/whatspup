@@ -4,6 +4,9 @@ const puppeteer = require('puppeteer');
 const notifier = require('node-notifier');
 const winston = require('winston');
 const fs = require('fs');
+const boxen = require('boxen');
+const gradient = require('gradient-string');
+const logSymbols = require('log-symbols');
 
 const config = require('./config.js');
 const selector = require('./selector.js');
@@ -13,7 +16,7 @@ let user = process.argv[2];
 
 // make sure they specified user to chat with
 if (!user) {
-  console.log('User argument not specified, exiting...');
+  print(logSymbols.error, 'User argument not specified, exiting...');
   process.exit(1);
 }
 
@@ -24,6 +27,13 @@ process.setMaxListeners(0);
   const logger = setUpLogging();
 
   try {
+
+    print(boxen('Whatspup', {
+      padding: 1,
+      borderStyle: 'double',
+      borderColor: 'green',
+      backgroundColor: 'green'
+    }));
 
     // custom vars ///////////////////////////////
     let last_received_message = '';
@@ -59,7 +69,7 @@ process.setMaxListeners(0);
     // set user agent
     await page.setUserAgent('Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3264.0 Safari/537.36');
 
-    print('Loading...', 'info');
+    print(gradient.rainbow('Initializing...'));
 
     page.goto('https://web.whatsapp.com/', { waitUntil: 'networkidle2', timeout: 0 }).then(async function (response) {
       //print('Whatsapp loaded...', 'info');
@@ -105,15 +115,14 @@ process.setMaxListeners(0);
       await page.waitFor(user_chat_selector);
       await page.click(user_chat_selector);
       await page.click(selector.chat_input);
-
       let name = getCurrentUserName();
 
       if (name) {
-        print('You can chat now :-)', 'header');
-        print('Press Ctrl+C twice to exit any time.', 'error');
+        console.log(logSymbols.success, 'You can chat now :-)');
+        console.log(logSymbols.info, 'Press Ctrl+C twice to exit any time.');
       }
       else {
-        print('Could not find specified user "' + user + '"in chat threads', 'error');
+        console.log(logSymbols.warning, 'Could not find specified user "' + user + '"in chat threads');
       }
     }
 
@@ -284,10 +293,8 @@ process.setMaxListeners(0);
 
     setInterval(readLastOtherPersonMessage, (config.check_message_interval * 1000));
 
-    //await browser.close();
 
   } catch (err) {
-    //console.error(err);
     logger.warn(err);
   }
 
