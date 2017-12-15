@@ -70,7 +70,7 @@ process.setMaxListeners(0);
     // set user agent
     await page.setUserAgent('Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3264.0 Safari/537.36');
 
-    print(gradient.rainbow('Initializing...'));
+    print(gradient.rainbow('Initializing...\r\n'));
 
     page.goto('https://web.whatsapp.com/', { waitUntil: 'networkidle2', timeout: 0 }).then(async function (response) {
       //print('Whatsapp loaded...', 'blue');
