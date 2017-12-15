@@ -195,7 +195,7 @@ process.setMaxListeners(0);
         if (last_received_message) {
           if (last_received_message != message) {
             last_received_message = message;
-            print(name + ": " + message, config.received_message_color);
+            print('\r\n' + name + ": " + message, config.received_message_color);
 
             // show notification
             if (config.notification_enabled) {
@@ -224,7 +224,7 @@ process.setMaxListeners(0);
         }
         else {
           last_received_message = message;
-          //print(name + ": " + message, config.received_message_color);
+          //print('\r\n' + name + ": " + message, config.received_message_color);
         }
 
       }
