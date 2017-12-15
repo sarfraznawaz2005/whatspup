@@ -21,11 +21,19 @@ module.exports = {
     // Number of seconds to check for new messages
     check_message_interval: 5,
 
+    // If true, your last message sent will be notified when read by other user
+    read_receipts: true,
+
+    ////////////////////////////////////////////////////////////////
+    // CHAT COLOR SETTINGS
+    ////////////////////////////////////////////////////////////////    
+    // Colors: black, red, green, yellow, blue, magenta, cyan, white, gray
+
     // If true, colored messages will be shown
     colors: true,
 
-    // If true, your last message sent will be notified when read by other user
-    read_receipts: true,
+    received_message_color: 'green',
+    sent_message_color: 'yellow',
 
     ////////////////////////////////////////////////////////////////
     // CHAT NOTIFICATION SETTINGS

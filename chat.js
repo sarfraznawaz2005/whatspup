@@ -2,6 +2,7 @@
 
 const puppeteer = require('puppeteer');
 const notifier = require('node-notifier');
+const chalk = require('chalk');
 const winston = require('winston');
 const fs = require('fs');
 const boxen = require('boxen');
@@ -16,7 +17,7 @@ let user = process.argv[2];
 
 // make sure they specified user to chat with
 if (!user) {
-  print(logSymbols.error, 'User argument not specified, exiting...');
+  console.log(logSymbols.error, chalk.red('User argument not specified, exiting...'));
   process.exit(1);
 }
 
@@ -72,7 +73,7 @@ process.setMaxListeners(0);
     print(gradient.rainbow('Initializing...'));
 
     page.goto('https://web.whatsapp.com/', { waitUntil: 'networkidle2', timeout: 0 }).then(async function (response) {
-      //print('Whatsapp loaded...', 'info');
+      //print('Whatsapp loaded...', 'blue');
 
       await page.waitFor(networkIdleTimeout);
 
@@ -97,6 +98,9 @@ process.setMaxListeners(0);
             startChat(new_user);
             user = new_user;
           }
+          else {
+            console.log(logSymbols.error, chalk.red('user name not specified!'));
+          }
         }
         else {
           typeMessage(message);
@@ -118,8 +122,9 @@ process.setMaxListeners(0);
       let name = getCurrentUserName();
 
       if (name) {
-        console.log(logSymbols.success, 'You can chat now :-)');
-        console.log(logSymbols.info, 'Press Ctrl+C twice to exit any time.');
+        console.log(logSymbols.success, chalk.bgGreen('You can chat now :-)'));
+        console.log(logSymbols.info, chalk.bgRed('Press Ctrl+C twice to exit any time.'));
+        console.log('\r\n');
       }
       else {
         console.log(logSymbols.warning, 'Could not find specified user "' + user + '"in chat threads');
@@ -141,7 +146,7 @@ process.setMaxListeners(0);
       }, selector.last_message_sent);
 
       if (message == messageSent) {
-        print("You: " + message, 'warning');
+        print("You: " + message, config.sent_message_color);
 
         // setup interval for read receipts
         if (config.read_receipts) {
@@ -187,7 +192,7 @@ process.setMaxListeners(0);
         if (last_received_message) {
           if (last_received_message != message) {
             last_received_message = message;
-            print(name + ": " + message, 'success');
+            print(name + ": " + message, config.received_message_color);
 
             // show notification
             if (config.notification_enabled) {
@@ -216,7 +221,7 @@ process.setMaxListeners(0);
         }
         else {
           last_received_message = message;
-          //print(name + ": " + message, 'success');
+          //print(name + ": " + message, config.received_message_color);
         }
 
       }
@@ -243,13 +248,11 @@ process.setMaxListeners(0);
 
       if (is_last_message_read) {
         if (config.read_receipts && last_sent_message_interval) {
-          let msg = 'READ: "' + message + '"';
-
           // make sure we don't report for same message again
-          if (!sentMessages.includes(msg)) {
-            print(msg, 'info');
+          if (!sentMessages.includes(message)) {
+            console.log(logSymbols.success, chalk.gray(message));
 
-            sentMessages.push(msg);
+            sentMessages.push(message);
 
             clearInterval(last_sent_message_interval);
           }
@@ -264,29 +267,18 @@ process.setMaxListeners(0);
     }
 
     // prints on console
-    function print(message, type = null) {
+    function print(message, color = null) {
 
-      if (!config.colors) {
-        console.log('\n' + message);
+      if (!config.colors || color == null) {
+        console.log('\r\n' + message);
         return;
       }
 
-      let end_color = '\033[0m';
-
-      let types = {
-        header: '\033[95m',
-        info: '\033[94m',
-        success: '\033[92m',
-        warning: '\033[93m',
-        error: '\033[91m',
-        bold: '\033[1m'
-      };
-
-      if (type == null) {
-        console.log('\n' + message);
+      if (chalk[color]) {
+        console.log('\r\n' + chalk[color](message));
       }
       else {
-        console.log('\n' + types[type] + message + end_color);
+        console.log('\r\n' + message);
       }
 
     }
