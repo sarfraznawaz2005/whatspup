@@ -30,7 +30,7 @@ Tested on Windows with Node v8.9.1 and puppeteer v0.13.0
 - Clone this repository. `git clone https://github.com/sarfraznawaz2005/whatspup.git`
 - Type `npm install`
 - Type `node chat.js USERNAME` (case-sensitive)
-- Scan Whatsapp QR Code once
+- Chrome will open up, now just scan Whatsapp QR Code once
 - Wait for connection and start typing your messages :smile:
 
 ## Commands ##
@@ -42,7 +42,7 @@ You can switch chat with another user anytime by typing on console:
 
 NOTE: `USERNAME` is supposed to be a person with whom you have already initiated a conversation in whatsapp. In other words, we use a selector to click that user's name from conversations list.
 
-If `USERNAME` contains space, you should specify it in double quotes instead like: `node chat.js "Foo Bar"`
+If `USERNAME` contains space, you should specify it in double quotes instead like `--chat "Foo Bar"`
 
 **Clear Chat Screen**
 
