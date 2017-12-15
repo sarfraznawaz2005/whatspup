@@ -273,15 +273,15 @@ process.setMaxListeners(0);
     function print(message, color = null) {
 
       if (!config.colors || color == null) {
-        console.log('\r\n' + message);
+        console.log('\n' + message);
         return;
       }
 
       if (chalk[color]) {
-        console.log('\r\n' + chalk[color](message));
+        console.log('\n' + chalk[color](message));
       }
       else {
-        console.log('\r\n' + message);
+        console.log('\n' + message);
       }
 
     }
