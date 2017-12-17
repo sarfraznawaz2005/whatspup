@@ -38,6 +38,7 @@ process.setMaxListeners(0);
 
     // custom vars ///////////////////////////////
     let last_received_message = '';
+    let last_received_message_other_user = '';
     let last_sent_message_interval = null;
     let last_new_message_interval = null;
     let sentMessages = [];
@@ -127,7 +128,7 @@ process.setMaxListeners(0);
       if (name) {
         console.log(logSymbols.success, chalk.bgGreen('You can chat now :-)'));
         console.log(logSymbols.info, chalk.bgRed('Press Ctrl+C twice to exit any time.'));
-        console.log('\r\n');
+        console.log('\n');
       }
       else {
         console.log(logSymbols.warning, 'Could not find specified user "' + user + '"in chat threads');
@@ -238,36 +239,15 @@ process.setMaxListeners(0);
         if (last_received_message) {
           if (last_received_message != message) {
             last_received_message = message;
-            print('\r\n' + name + ": " + message, config.received_message_color);
+            print('\n' + name + ": " + message, config.received_message_color);
 
             // show notification
-            if (config.notification_enabled) {
-
-              let notifContent = message;
-              let notifName = name;
-
-              if (config.notification_hide_message) {
-                notifContent = config.notification_hidden_message || 'New Message Received';
-              }
-
-              if (config.notification_hide_user) {
-                notifName = config.notification_hidden_user || 'Someone';
-              }
-
-              notifier.notify({
-                title: notifName,
-                message: notifContent,
-                wait: false,
-                sound: config.notification_sound,
-                timeout: config.notification_time
-              });
-
-            }
+            notify(name, message);
           }
         }
         else {
           last_received_message = message;
-          print('\r\n' + name + ": " + message, config.received_message_color);
+          print('\n' + name + ": " + message, config.received_message_color);
         }
 
       }
@@ -309,7 +289,28 @@ process.setMaxListeners(0);
 
     // checks for any new messages sent by all other users
     async function checkNewMessagesAllUsers() {
-      // todo
+      let name = await getCurrentUserName();
+
+      let user = await page.evaluate((selector) => {
+
+        let nodes = document.querySelectorAll(selector);
+        let el = nodes[0];
+
+        return el ? el.innerText : '';
+      }, selector.new_message_user);
+
+      if (user && user != name) {
+        let message = 'You have a new message by "' + user + '". Switch to that user to see the message.';
+
+        if (last_received_message_other_user != message) {
+          print('\n' + message, config.received_message_color_new_user);
+
+          // show notification
+          notify(user, message);
+
+          last_received_message_other_user = message;
+        }
+      }
     }
 
     // prints on console
@@ -329,8 +330,31 @@ process.setMaxListeners(0);
 
     }
 
-    setInterval(readLastOtherPersonMessage, (config.check_message_interval * 1000));
+    // send notification
+    function notify(name, message) {
+      if (config.notification_enabled) {
 
+        if (config.notification_hide_message) {
+          message = config.notification_hidden_message || 'New Message Received';
+        }
+
+        if (config.notification_hide_user) {
+          name = config.notification_hidden_user || 'Someone';
+        }
+
+        notifier.notify({
+          title: name,
+          message: message,
+          wait: true,
+          sound: config.notification_sound,
+          timeout: config.notification_time
+        });
+
+      }
+    }
+
+    setInterval(readLastOtherPersonMessage, (config.check_message_interval * 1000));
+    setInterval(checkNewMessagesAllUsers, (config.check_message_interval * 1000));
 
   } catch (err) {
     logger.warn(err);

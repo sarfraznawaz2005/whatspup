@@ -33,6 +33,7 @@ module.exports = {
     colors: true,
 
     received_message_color: 'green',
+    received_message_color_new_user: 'magenta',
     sent_message_color: 'yellow',
 
     ////////////////////////////////////////////////////////////////
