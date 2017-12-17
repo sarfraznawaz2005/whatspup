@@ -216,7 +216,7 @@ process.setMaxListeners(0);
       if (!message) {
         message = await page.evaluate((selector) => {
 
-          let nodes = document.querySelectorAll(selector + ' img.large-emoji');
+          let nodes = document.querySelectorAll(selector + ':last-child img.large-emoji:last-child');
           let el = nodes[nodes.length - 1];
 
           return el ? 'Emoji Message' : '';
