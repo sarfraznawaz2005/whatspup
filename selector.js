@@ -8,7 +8,7 @@ module.exports = {
     chat_input: '#main > footer > div.block-compose > div.input-container > div > div.pluggable-input-body',
 
     // used to read last message sent by other person
-    last_message: '#main div.message-in.message-chat span.emojitext:last-child',
+    last_message: '#main div.message-in',
 
     // last message sent by you
     last_message_sent: '#main div.message-out.message-chat span.emojitext:last-child',

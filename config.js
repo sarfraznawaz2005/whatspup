@@ -55,7 +55,7 @@ module.exports = {
     notification_hidden_user: "Someone",
 
     // Reply directly via notification or not
-    // TODO: Work in progress
+    // TODO: To be implemented...
     notification_reply_message: true,
 
     // Enable or disable notification sound

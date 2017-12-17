@@ -176,20 +176,63 @@ process.setMaxListeners(0);
     // read any new messages sent by specified user
     async function readLastOtherPersonMessage() {
 
+      let message = '';
       let name = await getCurrentUserName();
 
       if (!name) {
-        name = user;
+        return false;
       }
 
       // read last message sent by other user
-      let message = await page.evaluate((selector) => {
+      message = await page.evaluate((selector) => {
 
         let nodes = document.querySelectorAll(selector);
         let el = nodes[nodes.length - 1];
 
-        return el ? el.innerText : '';
+        if (!el) {
+          return '';
+        }
+
+        // check if it is picture message
+        if (el.classList.contains('message-image')) {
+          return 'Picture Message';
+        }
+
+        // check if it is gif message
+        if (el.classList.contains('message-gif')) {
+          return 'GIF Message';
+        }
+
+        // check if it is video message
+        if (el.classList.contains('message-video')) {
+          return 'Video Message';
+        }
+
       }, selector.last_message);
+
+
+      // check if it is emoji message
+      if (!message) {
+        message = await page.evaluate((selector) => {
+
+          let nodes = document.querySelectorAll(selector + ' img.large-emoji');
+          let el = nodes[nodes.length - 1];
+
+          return el ? 'Emoji Message' : '';
+        }, selector.last_message);
+      }
+
+      // text message
+      if (!message) {
+        message = await page.evaluate((selector) => {
+
+          let nodes = document.querySelectorAll(selector + ' span.emojitext');
+          let el = nodes[nodes.length - 1];
+
+          return el ? el.innerText : '';
+        }, selector.last_message);
+      }
+
 
       if (message) {
         if (last_received_message) {
@@ -224,7 +267,7 @@ process.setMaxListeners(0);
         }
         else {
           last_received_message = message;
-          //print('\r\n' + name + ": " + message, config.received_message_color);
+          print('\r\n' + name + ": " + message, config.received_message_color);
         }
 
       }
