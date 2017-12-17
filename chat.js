@@ -213,6 +213,8 @@ process.setMaxListeners(0);
 
 
       // check if it is emoji message
+      // FIX: doesn't seem to work correctly always
+      /*
       if (!message) {
         message = await page.evaluate((selector) => {
 
@@ -222,6 +224,7 @@ process.setMaxListeners(0);
           return el ? 'Emoji Message' : '';
         }, selector.last_message);
       }
+      */
 
       // text message
       if (!message) {
