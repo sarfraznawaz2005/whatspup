@@ -55,10 +55,6 @@ module.exports = {
     // If notification_hide_user is TRUE, this content will be shown in notification for user's name
     notification_hidden_user: "Someone",
 
-    // Reply directly via notification or not
-    // TODO: To be implemented...
-    notification_reply_message: true,
-
     // Enable or disable notification sound
     notification_sound: true,
 
