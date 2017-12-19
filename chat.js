@@ -220,19 +220,13 @@ process.setMaxListeners(0);
           return 'Emoji Message';
         }
 
+        // text message
+        nodes = el.querySelectorAll('span.emojitext');
+        el = nodes[nodes.length - 1];
+
+        return el ? el.innerText : '';
+
       }, selector.last_message);
-
-
-      // text message
-      if (!message) {
-        message = await page.evaluate((selector) => {
-
-          let nodes = document.querySelectorAll(selector + ' span.emojitext');
-          let el = nodes[nodes.length - 1];
-
-          return el ? el.innerText : '';
-        }, selector.last_message);
-      }
 
 
       if (message) {
