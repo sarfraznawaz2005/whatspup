@@ -55,6 +55,10 @@ To clear chat screen, type `--clear`.
 
 You can set various options in `config.js` file.
 
+## Others ##
+
+ - You can send common emojis directly by typing `:smile:`, `:lol:`, `:happy:`, `:love:`, `:wink:` OR `;-)`, `:-)`, `<3`, etc
+
 ## Issues ##
 
 - Currently does not seem to work in invisible/headless mode (seems to be a bug in puppeteer currently). So you have to set `window` option to `true` in config.js file.
