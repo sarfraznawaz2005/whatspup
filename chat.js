@@ -127,11 +127,10 @@ process.setMaxListeners(0);
 
       if (name) {
         console.log(logSymbols.success, chalk.bgGreen('You can chat now :-)'));
-        console.log(logSymbols.info, chalk.bgRed('Press Ctrl+C twice to exit any time.'));
-        console.log('\n');
+        console.log(logSymbols.info, chalk.bgRed('Press Ctrl+C twice to exit any time.\n'));
       }
       else {
-        console.log(logSymbols.warning, 'Could not find specified user "' + user + '"in chat threads');
+        console.log(logSymbols.warning, 'Could not find specified user "' + user + '"in chat threads\n');
       }
     }
 
@@ -209,6 +208,11 @@ process.setMaxListeners(0);
           return 'Video Message';
         }
 
+        // check if it is voice message
+        if (el.classList.contains('message-ptt')) {
+          return 'Voice Message';
+        }
+
       }, selector.last_message);
 
 
@@ -218,7 +222,7 @@ process.setMaxListeners(0);
       if (!message) {
         message = await page.evaluate((selector) => {
 
-          let nodes = document.querySelectorAll(selector + ':last-child img.large-emoji:last-child');
+          let nodes = document.querySelectorAll(selector + ' img.large-emoji:last-child');
           let el = nodes[nodes.length - 1];
 
           return el ? 'Emoji Message' : '';
@@ -279,7 +283,7 @@ process.setMaxListeners(0);
         if (config.read_receipts && last_sent_message_interval) {
           // make sure we don't report for same message again
           if (!sentMessages.includes(message)) {
-            console.log('\n' + logSymbols.success, chalk.gray(message));
+            console.log('\n' + logSymbols.success, chalk.gray(message) + '\n');
 
             sentMessages.push(message);
 
@@ -320,15 +324,15 @@ process.setMaxListeners(0);
     function print(message, color = null) {
 
       if (!config.colors || color == null) {
-        console.log('\n' + message);
+        console.log('\n' + message + '\n');
         return;
       }
 
       if (chalk[color]) {
-        console.log('\n' + chalk[color](message));
+        console.log('\n' + chalk[color](message) + '\n');
       }
       else {
-        console.log('\n' + message);
+        console.log('\n' + message + '\n');
       }
 
     }
