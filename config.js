@@ -56,7 +56,7 @@ module.exports = {
     notification_hidden_user: "Someone",
 
     // Enable or disable notification sound
-    notification_sound: true,
+    notification_sound: false,
 
     // Time in seconds notification should be displayed.
     notification_time: 10

@@ -8,9 +8,12 @@ const fs = require('fs');
 const boxen = require('boxen');
 const gradient = require('gradient-string');
 const logSymbols = require('log-symbols');
+const ansiEscapes = require('ansi-escapes');
 
 const config = require('./config.js');
 const selector = require('./selector.js');
+
+process.setMaxListeners(0);
 
 // get user from command line argument
 let user = process.argv[2];
@@ -21,7 +24,10 @@ if (!user) {
   process.exit(1);
 }
 
-process.setMaxListeners(0);
+// catch un-handled promise errors
+process.on("unhandledRejection", (reason, p) => {
+  console.warn("Unhandled Rejection at: Promise", p, "reason:", reason);
+});
 
 (async function main() {
 
@@ -61,11 +67,6 @@ process.setMaxListeners(0);
       ]
     });
 
-    process.on("unhandledRejection", (reason, p) => {
-      logger.warn(reason);
-      //console.error("Unhandled Rejection at: Promise", p, "reason:", reason);
-    });
-
     const page = await browser.newPage();
 
     // set user agent
@@ -74,7 +75,6 @@ process.setMaxListeners(0);
     print(gradient.rainbow('Initializing...\n'));
 
     page.goto('https://web.whatsapp.com/', { waitUntil: 'networkidle2', timeout: 0 }).then(async function (response) {
-      //print('Whatsapp loaded...', 'blue');
 
       await page.waitFor(networkIdleTimeout);
 
@@ -103,8 +103,9 @@ process.setMaxListeners(0);
             console.log(logSymbols.error, chalk.red('user name not specified!'));
           }
         }
+        // clear chat screen
         else if (message.toLowerCase().indexOf('--clear') > -1) {
-          process.stdout.write('\x1Bc');
+          process.stdout.write(ansiEscapes.clearScreen);
         }
         else {
           typeMessage(message);
@@ -340,9 +341,13 @@ process.setMaxListeners(0);
           title: name,
           message: message,
           wait: true,
-          sound: config.notification_sound,
           timeout: config.notification_time
         });
+
+        // sound/beep
+        if (config.notification_sound) {
+          process.stdout.write(ansiEscapes.beep);
+        }
 
       }
     }
