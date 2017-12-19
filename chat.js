@@ -213,22 +213,15 @@ process.setMaxListeners(0);
           return 'Voice Message';
         }
 
+        // check if it is emoji message
+        let isEmoji = el.getElementsByClassName("large-emoji")[0];
+
+        if (isEmoji) {
+          return 'Emoji Message';
+        }
+
       }, selector.last_message);
 
-
-      // check if it is emoji message
-      // FIX: doesn't seem to work correctly always
-      /*
-      if (!message) {
-        message = await page.evaluate((selector) => {
-
-          let nodes = document.querySelectorAll(selector + ' img.large-emoji:last-child');
-          let el = nodes[nodes.length - 1];
-
-          return el ? 'Emoji Message' : '';
-        }, selector.last_message);
-      }
-      */
 
       // text message
       if (!message) {
