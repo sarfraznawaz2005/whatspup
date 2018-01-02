@@ -15,14 +15,25 @@ const selector = require('./selector.js');
 
 process.setMaxListeners(0);
 
-// get user from command line argument
-let user = process.argv[2];
-
 // make sure they specified user to chat with
-if (!user) {
+if (!process.argv[2]) {
   console.log(logSymbols.error, chalk.red('User argument not specified, exiting...'));
   process.exit(1);
 }
+
+/////////////////////////////////////////////
+// get user from command line argument
+let user = '';
+
+// because a username can contain first and last name/spaces, etc
+for (let i = 2; i <=5; i++) {
+  if (typeof process.argv[i] !== 'undefined') {
+    user += process.argv[i] + ' ';
+  }  
+}
+
+user = user.trim();
+/////////////////////////////////////////////
 
 // catch un-handled promise errors
 process.on("unhandledRejection", (reason, p) => {
