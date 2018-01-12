@@ -19,7 +19,7 @@
     "gradient-string": "^1.0.0",
     "log-symbols": "^2.1.0",
     "node-notifier": "^5.1.2",
-    "puppeteer": "^0.13.0",
+    "puppeteer": "^1.0.0",
     "winston": "^2.4.0"
   }
 }
