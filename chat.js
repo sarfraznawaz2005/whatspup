@@ -226,14 +226,15 @@ process.on("unhandledRejection", (reason, p) => {
         }
 
         // check if it is emoji message
-        let isEmoji = el.getElementsByClassName("large-emoji")[0];
+        let emojiNodes = el.querySelectorAll("img.selectable-text");
+        let isEmoji = emojiNodes[emojiNodes.length - 1];
 
         if (isEmoji) {
           return 'Emoji Message';
         }
 
         // text message
-        nodes = el.querySelectorAll('span.emojitext');
+        nodes = el.querySelectorAll('span.selectable-text');
         el = nodes[nodes.length - 1];
 
         return el ? el.innerText : '';
