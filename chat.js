@@ -221,8 +221,8 @@ process.on("unhandledRejection", (reason, p) => {
         }
 
         // check if it is voice message
-        if (el.classList.contains('message-ptt')) {
-          return 'Voice Message';
+        if (el.classList.contains('message-audio')) {
+          return 'Audio Message';
         }
 
         // check if it is emoji message
