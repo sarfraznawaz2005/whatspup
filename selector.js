@@ -5,7 +5,7 @@ module.exports = {
     user_chat: '#pane-side span[title="XXX"]',
 
     // textbox selector where message will be typed
-    chat_input: '#main > footer div.pluggable-input-compose div.pluggable-input-body',
+    chat_input: '#main > footer div.selectable-text[contenteditable]',
 
     // used to read last message sent by other person
     last_message: '#main div.message-in',
