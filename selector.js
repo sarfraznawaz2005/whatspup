@@ -11,7 +11,7 @@ module.exports = {
     last_message: '#main div.message-in',
 
     // last message sent by you
-    last_message_sent: '#main div.message-out.message-chat span.selectable-text:last-child',
+    last_message_sent: '#main div.message-out span.selectable-text:last-child',
 
     // used to check if your messsage was read
     last_message_read: '#main div.message-out.message-chat div.status-icon:last-child',
