@@ -269,7 +269,7 @@ process.on("unhandledRejection", (reason, p) => {
         let el = nodes[nodes.length - 1];
 
         if (el) {
-          let readHTML = el.innerHTML;
+          let readHTML = el.outerHTML;
 
           if (readHTML.length) {
             return readHTML.indexOf('data-icon="msg-dblcheck-ack"') > -1;
