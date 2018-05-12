@@ -14,7 +14,7 @@ module.exports = {
     last_message_sent: '#main div.message-out span.selectable-text:last-child',
 
     // used to check if your messsage was read
-    last_message_read: '#main div.message-out.message-chat div.status-icon:last-child',
+    last_message_read: '#main div.message-out span[data-icon]:last-child',
 
     // gets username for conversation thread
     user_name: '#main > header span[title]',
