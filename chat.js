@@ -62,7 +62,7 @@ process.on("unhandledRejection", (reason, p) => {
     let newMessages = [];
     //////////////////////////////////////////////    
 
-    const networkIdleTimeout = 50000;
+    const networkIdleTimeout = 30000;
     const stdin = process.stdin;
     const stdout = process.stdout;
     const headless = !config.window;
@@ -206,9 +206,19 @@ process.on("unhandledRejection", (reason, p) => {
         }
 
         // check if it is picture message
+
+        /*
         if (el.classList.contains('message-image')) {
           return 'Picture Message';
         }
+        */
+
+       let picNodes = el.querySelectorAll("img[src*='blob']");
+       let isPicture = picNodes[picNodes.length - 1];
+
+       if (isPicture) {
+         return 'Picture Message';
+       }
 
         // check if it is gif message
         if (el.classList.contains('message-gif')) {
@@ -216,17 +226,23 @@ process.on("unhandledRejection", (reason, p) => {
         }
 
         // check if it is video message
-        if (el.classList.contains('message-video')) {
+        let vidNodes = el.querySelectorAll(".video-thumb");
+        let isVideo = vidNodes[vidNodes.length - 1];
+
+        if (isVideo) {
           return 'Video Message';
         }
 
         // check if it is voice message
-        if (el.classList.contains('message-audio')) {
-          return 'Audio Message';
+        let audioNodes = el.querySelectorAll("audio");
+        let isAudio = audioNodes[audioNodes.length - 1];
+
+        if (isAudio) {
+          return 'Voice Message';
         }
 
         // check if it is emoji message
-        let emojiNodes = el.querySelectorAll("img.selectable-text");
+        let emojiNodes = el.querySelectorAll("div.selectable-text img.selectable-text");
         let isEmoji = emojiNodes[emojiNodes.length - 1];
 
         if (isEmoji) {
