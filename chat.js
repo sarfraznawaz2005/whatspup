@@ -221,9 +221,12 @@ process.on("unhandledRejection", (reason, p) => {
        }
 
         // check if it is gif message
-        if (el.classList.contains('message-gif')) {
-          return 'GIF Message';
-        }
+       let gifNodes = el.querySelectorAll("div[style*='background-image']");
+       let isGif = gifNodes[gifNodes.length - 1];
+
+       if (isGif) {
+         return 'Gif Message';
+       }
 
         // check if it is video message
         let vidNodes = el.querySelectorAll(".video-thumb");
