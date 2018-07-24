@@ -372,7 +372,7 @@ process.on("unhandledRejection", (reason, p) => {
           appName: "Snore.DesktopToasts", // Windows FIX - might not be needed
           title: name,
           message: message,
-          wait: true,
+          wait: false,
           timeout: config.notification_time
         });
 
