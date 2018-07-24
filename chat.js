@@ -167,7 +167,7 @@ process.on("unhandledRejection", (reason, p) => {
         if (config.read_receipts) {
           last_sent_message_interval = setInterval(function () {
             isLastMessageRead(user, message);
-          }, (config.check_message_interval * 1000));
+          }, (config.check_message_interval));
         }
 
       }
@@ -384,8 +384,8 @@ process.on("unhandledRejection", (reason, p) => {
       }
     }
 
-    setInterval(readLastOtherPersonMessage, (config.check_message_interval * 1000));
-    setInterval(checkNewMessagesAllUsers, (config.check_message_interval * 1000));
+    setInterval(readLastOtherPersonMessage, (config.check_message_interval));
+    setInterval(checkNewMessagesAllUsers, (config.check_message_interval));
 
   } catch (err) {
     logger.warn(err);
