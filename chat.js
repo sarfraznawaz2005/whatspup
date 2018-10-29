@@ -38,7 +38,7 @@ user = user.trim();
 
 // catch un-handled promise errors
 process.on("unhandledRejection", (reason, p) => {
-  console.warn("Unhandled Rejection at: Promise", p, "reason:", reason);
+  //console.warn("Unhandled Rejection at: Promise", p, "reason:", reason);
 });
 
 (async function main() {
