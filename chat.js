@@ -9,6 +9,7 @@ const boxen = require('boxen');
 const gradient = require('gradient-string');
 const logSymbols = require('log-symbols');
 const ansiEscapes = require('ansi-escapes');
+const path = require('path');
 
 const config = require('./config.js');
 const selector = require('./selector.js');
@@ -69,12 +70,13 @@ process.on("unhandledRejection", (reason, p) => {
 
     const browser = await puppeteer.launch({
       headless: headless,
-      userDataDir: config.data_dir,
+      //userDataDir: config.data_dir,
       args: [
+		`--user-data-dir=${path.resolve(__dirname, config.data_dir)}`,
         '--disable-infobars',
         '--window-position=0,0',
         '--ignore-certificate-errors',
-        '--ignore-certificate-errors-spki-list '
+        '--ignore-certificate-errors-spki-list'
       ]
     });
 
@@ -99,6 +101,7 @@ process.on("unhandledRejection", (reason, p) => {
     // allow user to type on console and read it
     function readCommands() {
       stdin.resume();
+      
       stdin.on('data', function (data) {
         let message = data.toString().trim();
 

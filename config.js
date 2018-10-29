@@ -11,14 +11,14 @@ module.exports = {
     data_dir: './tmp',
 
     // When true, Chrome browser window will be shown. When false, it will be hidden
-    window: true,
+    window: false,
 
 
     ////////////////////////////////////////////////////////////////
     // CHAT SETTINGS
     ////////////////////////////////////////////////////////////////
 
-    // Number of seconds to check for new messages
+    // Number of milli seconds to check for new messages
     check_message_interval: 1,
 
     // If true, your last message sent will be notified when read by other user

@@ -59,7 +59,7 @@ You can set various options in `config.js` file.
 
 ## Issues ##
 
-- Currently does not seem to work in invisible/headless mode (seems to be a bug in puppeteer currently). So you have to set `window` option to `true` in config.js file.
+- ~~Currently does not seem to work in invisible/headless mode (seems to be a bug in puppeteer currently). So you have to set `window` option to `true` in config.js file.~~ Now works in hidden mode, just ignore initial error messages shown on screen.
 
 ## Contribute ##
 
