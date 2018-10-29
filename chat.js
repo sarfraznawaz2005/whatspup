@@ -72,7 +72,7 @@ process.on("unhandledRejection", (reason, p) => {
       headless: headless,
       //userDataDir: config.data_dir,
       args: [
-		`--user-data-dir=${path.resolve(__dirname, config.data_dir)}`,
+	`--user-data-dir=${path.resolve(__dirname, config.data_dir)}`,
         '--disable-infobars',
         '--window-position=0,0',
         '--ignore-certificate-errors',
