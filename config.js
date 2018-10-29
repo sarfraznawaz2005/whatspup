@@ -11,7 +11,7 @@ module.exports = {
     data_dir: './tmp',
 
     // When true, Chrome browser window will be shown. When false, it will be hidden
-    window: false,
+    window: true,
 
 
     ////////////////////////////////////////////////////////////////
