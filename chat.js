@@ -27,10 +27,10 @@ if (!process.argv[2]) {
 let user = '';
 
 // because a username can contain first and last name/spaces, etc
-for (let i = 2; i <=5; i++) {
+for (let i = 2; i <= 5; i++) {
   if (typeof process.argv[i] !== 'undefined') {
     user += process.argv[i] + ' ';
-  }  
+  }
 }
 
 user = user.trim();
@@ -58,21 +58,18 @@ process.on("unhandledRejection", (reason, p) => {
     let last_received_message = '';
     let last_received_message_other_user = '';
     let last_sent_message_interval = null;
-    let last_new_message_interval = null;
     let sentMessages = [];
-    let newMessages = [];
     //////////////////////////////////////////////    
 
     const networkIdleTimeout = 30000;
     const stdin = process.stdin;
-    const stdout = process.stdout;
     const headless = !config.window;
 
     const browser = await puppeteer.launch({
       headless: headless,
       //userDataDir: config.data_dir,
       args: [
-		`--user-data-dir=${path.resolve(__dirname, config.data_dir)}`,
+        `--user-data-dir=${path.resolve(__dirname, config.data_dir)}`,
         '--disable-infobars',
         '--window-position=0,0',
         '--ignore-certificate-errors',
@@ -87,7 +84,10 @@ process.on("unhandledRejection", (reason, p) => {
 
     print(gradient.rainbow('Initializing...\n'));
 
-    page.goto('https://web.whatsapp.com/', { waitUntil: 'networkidle2', timeout: 0 }).then(async function (response) {
+    page.goto('https://web.whatsapp.com/', {
+      waitUntil: 'networkidle2',
+      timeout: 0
+    }).then(async function (response) {
 
       await page.waitFor(networkIdleTimeout);
 
@@ -101,7 +101,7 @@ process.on("unhandledRejection", (reason, p) => {
     // allow user to type on console and read it
     function readCommands() {
       stdin.resume();
-      
+
       stdin.on('data', function (data) {
         let message = data.toString().trim();
 
@@ -112,16 +112,14 @@ process.on("unhandledRejection", (reason, p) => {
           if (new_user) {
             startChat(new_user);
             user = new_user;
-          }
-          else {
+          } else {
             console.log(logSymbols.error, chalk.red('user name not specified!'));
           }
         }
         // clear chat screen
         else if (message.toLowerCase().indexOf('--clear') > -1) {
           process.stdout.write(ansiEscapes.clearScreen);
-        }
-        else {
+        } else {
           typeMessage(message);
         }
 
@@ -143,8 +141,7 @@ process.on("unhandledRejection", (reason, p) => {
       if (name) {
         console.log(logSymbols.success, chalk.bgGreen('You can chat now :-)'));
         console.log(logSymbols.info, chalk.bgRed('Press Ctrl+C twice to exit any time.\n'));
-      }
-      else {
+      } else {
         console.log(logSymbols.warning, 'Could not find specified user "' + user + '"in chat threads\n');
       }
     }
@@ -216,20 +213,20 @@ process.on("unhandledRejection", (reason, p) => {
         }
         */
 
-       let picNodes = el.querySelectorAll("img[src*='blob']");
-       let isPicture = picNodes[picNodes.length - 1];
+        let picNodes = el.querySelectorAll("img[src*='blob']");
+        let isPicture = picNodes[picNodes.length - 1];
 
-       if (isPicture) {
-         return 'Picture Message';
-       }
+        if (isPicture) {
+          return 'Picture Message';
+        }
 
         // check if it is gif message
-       let gifNodes = el.querySelectorAll("div[style*='background-image']");
-       let isGif = gifNodes[gifNodes.length - 1];
+        let gifNodes = el.querySelectorAll("div[style*='background-image']");
+        let isGif = gifNodes[gifNodes.length - 1];
 
-       if (isGif) {
-         return 'Gif Message';
-       }
+        if (isGif) {
+          return 'Gif Message';
+        }
 
         // check if it is video message
         let vidNodes = el.querySelectorAll(".video-thumb");
@@ -273,8 +270,7 @@ process.on("unhandledRejection", (reason, p) => {
             // show notification
             notify(name, message);
           }
-        }
-        else {
+        } else {
           last_received_message = message;
           //print(name + ": " + message, config.received_message_color);
         }
@@ -352,8 +348,7 @@ process.on("unhandledRejection", (reason, p) => {
 
       if (chalk[color]) {
         console.log('\n' + chalk[color](message) + '\n');
-      }
-      else {
+      } else {
         console.log('\n' + message + '\n');
       }
 
@@ -399,7 +394,9 @@ process.on("unhandledRejection", (reason, p) => {
       console.log(await page.content());
     }
 
-    await page.screenshot({ path: 'screen.png' });
+    await page.screenshot({
+      path: 'screen.png'
+    });
   }
 
   // setup logging
@@ -415,15 +412,15 @@ process.on("unhandledRejection", (reason, p) => {
 
     const tsFormat = () => (new Date()).toLocaleTimeString();
 
-    const logger = new (winston.Logger)({
+    const logger = new(winston.Logger)({
       transports: [
         // colorize the output to the console
-        new (winston.transports.Console)({
+        new(winston.transports.Console)({
           timestamp: tsFormat,
           colorize: true,
           level: 'info'
         }),
-        new (winston.transports.File)({
+        new(winston.transports.File)({
           filename: `${logDir}/log.log`,
           timestamp: tsFormat,
           level: env === 'development' ? 'debug' : 'info'
@@ -435,4 +432,3 @@ process.on("unhandledRejection", (reason, p) => {
   }
 
 })();
-
