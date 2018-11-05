@@ -10,6 +10,7 @@ const gradient = require('gradient-string');
 const logSymbols = require('log-symbols');
 const ansiEscapes = require('ansi-escapes');
 const path = require('path');
+const findChrome = require('./find_chrome');
 
 const config = require('./config.js');
 const selector = require('./selector.js');
@@ -61,15 +62,18 @@ process.on("unhandledRejection", (reason, p) => {
     let sentMessages = [];
     //////////////////////////////////////////////    
 
+    const executablePath = findChrome().pop() || null;
+    const tmpPath = path.resolve(__dirname, config.data_dir);
     const networkIdleTimeout = 30000;
     const stdin = process.stdin;
     const headless = !config.window;
 
     const browser = await puppeteer.launch({
       headless: headless,
-      //userDataDir: config.data_dir,
+      executablePath: executablePath,
+      userDataDir: tmpPath,
       args: [
-        `--user-data-dir=${path.resolve(__dirname, config.data_dir)}`,
+        '--disable-gpu',
         '--disable-infobars',
         '--window-position=0,0',
         '--ignore-certificate-errors',
@@ -78,9 +82,6 @@ process.on("unhandledRejection", (reason, p) => {
     });
 
     const page = await browser.newPage();
-
-    // set user agent
-    await page.setUserAgent('Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3264.0 Safari/537.36');
 
     print(gradient.rainbow('Initializing...\n'));
 
