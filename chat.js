@@ -1,4 +1,4 @@
-#!/usr/bin / env node
+#!/usr/bin/env node
 
 const puppeteer = require('puppeteer');
 const notifier = require('node-notifier');
