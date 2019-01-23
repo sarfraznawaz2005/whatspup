@@ -1,4 +1,4 @@
-#!/usr/bin / env node
+#!/usr/bin/env node
 
 const puppeteer = require('puppeteer');
 const notifier = require('node-notifier');
@@ -66,10 +66,9 @@ process.on("unhandledRejection", (reason, p) => {
     const tmpPath = path.resolve(__dirname, config.data_dir);
     const networkIdleTimeout = 30000;
     const stdin = process.stdin;
-    const headless = !config.window;
 
     const browser = await puppeteer.launch({
-      headless: headless,
+      headless: fs.existsSync(tmpPath),
       executablePath: executablePath,
       userDataDir: tmpPath,
       args: [
@@ -82,6 +81,13 @@ process.on("unhandledRejection", (reason, p) => {
     });
 
     const page = await browser.newPage();
+    await page.setUserAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36');
+    await page.setViewport({width: 1240, height:640})
+    await page.setRequestInterception(true);
+    
+    page.on('request', request => {
+      request.continue();
+    });
 
     print(gradient.rainbow('Initializing...\n'));
 
