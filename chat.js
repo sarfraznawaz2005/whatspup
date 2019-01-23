@@ -66,9 +66,10 @@ process.on("unhandledRejection", (reason, p) => {
     const tmpPath = path.resolve(__dirname, config.data_dir);
     const networkIdleTimeout = 30000;
     const stdin = process.stdin;
+    const headless = !config.window;
 
     const browser = await puppeteer.launch({
-      headless: fs.existsSync(tmpPath),
+      headless: headless,
       executablePath: executablePath,
       userDataDir: tmpPath,
       args: [
