@@ -72,12 +72,16 @@ process.on("unhandledRejection", (reason, p) => {
       headless: headless,
       executablePath: executablePath,
       userDataDir: tmpPath,
+      ignoreHTTPSErrors: true,
       args: [
         '--disable-gpu',
         '--disable-infobars',
         '--window-position=0,0',
         '--ignore-certificate-errors',
-        '--ignore-certificate-errors-spki-list'
+        '--ignore-certificate-errors-spki-list',
+        '--enable-features=NetworkService',
+        '--disable-setuid-sandbox',
+        '--no-sandbox'
       ]
     });
 
@@ -85,10 +89,7 @@ process.on("unhandledRejection", (reason, p) => {
     await page.setUserAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36');
     //await page.setViewport({width: 1366, height:768});
     await page.setRequestInterception(true);
-    
-    page.on('request', request => {
-      request.continue();
-    });
+    page.on('request', (request) => { request.continue(); });
 
     print(gradient.rainbow('Initializing...\n'));
 
