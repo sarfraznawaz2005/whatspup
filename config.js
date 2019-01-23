@@ -10,10 +10,6 @@ module.exports = {
     // and re-authorize Whatsapp.
     data_dir: './tmp',
 
-    // When true, Chrome browser window will be shown. When false, it will be hidden
-    window: true,
-
-
     ////////////////////////////////////////////////////////////////
     // CHAT SETTINGS
     ////////////////////////////////////////////////////////////////
