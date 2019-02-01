@@ -89,7 +89,9 @@ process.on("unhandledRejection", (reason, p) => {
     await page.setUserAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36');
     //await page.setViewport({width: 1366, height:768});
     await page.setRequestInterception(true);
-    page.on('request', (request) => { request.continue(); });
+    page.on('request', (request) => {
+      request.continue();
+    });
 
     print(gradient.rainbow('Initializing...\n'));
 
@@ -157,7 +159,16 @@ process.on("unhandledRejection", (reason, p) => {
 
     // type user-supplied message into chat window for selected user
     async function typeMessage(message) {
-      await page.keyboard.type(message);
+      let parts = message.split('\n');
+
+      for (var i = 0; i < parts.length; i++) {
+        await page.keyboard.down('Shift');
+        await page.keyboard.press('Enter');
+        await page.keyboard.up('Shift');
+
+        await page.keyboard.type(parts[i]);
+      }
+
       await page.keyboard.press('Enter');
 
       // verify message is sent
