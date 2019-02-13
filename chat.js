@@ -70,7 +70,7 @@ process.on("unhandledRejection", (reason, p) => {
 
     const browser = await puppeteer.launch({
       headless: headless,
-      executablePath: executablePath,
+      //executablePath: executablePath,
       userDataDir: tmpPath,
       ignoreHTTPSErrors: true,
       args: [
@@ -87,8 +87,10 @@ process.on("unhandledRejection", (reason, p) => {
 
     const page = await browser.newPage();
     await page.setUserAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36');
+
     //await page.setViewport({width: 1366, height:768});
     await page.setRequestInterception(true);
+
     page.on('request', (request) => {
       request.continue();
     });
@@ -103,6 +105,15 @@ process.on("unhandledRejection", (reason, p) => {
       await page.waitFor(networkIdleTimeout);
 
       //debug(page);
+
+      const pageContent = await page.content();
+
+      // this means browser upgrade warning came up for some reasons
+      if (pageContent.includes("Google Chrome")) {
+        //console.log(pageContent);
+        console.log(logSymbols.error, chalk.red('Could not open whatsapp web, most likely got browser upgrade message....'));
+        process.exit();
+      }
 
       startChat(user);
 
