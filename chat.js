@@ -74,11 +74,19 @@ process.on("unhandledRejection", (reason, p) => {
       userDataDir: tmpPath,
       ignoreHTTPSErrors: true,
       args: [
-        '--disable-gpu',
+        '--log-level=3', // fatal only
+        //'--start-maximized',
+        '--no-default-browser-check',
         '--disable-infobars',
-        '--window-position=0,0',
+        '--disable-web-security',
+        '--disable-site-isolation-trials',
+        '--no-experiments',
+        '--ignore-gpu-blacklist',
         '--ignore-certificate-errors',
         '--ignore-certificate-errors-spki-list',
+        '--disable-gpu',
+        '--disable-extensions',
+        '--disable-default-apps',
         '--enable-features=NetworkService',
         '--disable-setuid-sandbox',
         '--no-sandbox'
@@ -86,7 +94,7 @@ process.on("unhandledRejection", (reason, p) => {
     });
 
     const page = await browser.newPage();
-    await page.setUserAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36');
+    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3641.0 Safari/537.36');
 
     //await page.setViewport({width: 1366, height:768});
     await page.setRequestInterception(true);
@@ -104,13 +112,18 @@ process.on("unhandledRejection", (reason, p) => {
 
       await page.waitFor(networkIdleTimeout);
 
-      //debug(page);
+      //debug(page);      
 
-      const pageContent = await page.content();
+      const title = await page.evaluate(() => {
+
+        let nodes = document.querySelectorAll('.window-title');
+        let el = nodes[nodes.length - 1];
+
+        return el ? el.innerHTML : '';
+      });
 
       // this means browser upgrade warning came up for some reasons
-      if (pageContent.includes("Google Chrome")) {
-        //console.log(pageContent);
+      if (title && title.includes('Google Chrome 36+')) {
         console.log(logSymbols.error, chalk.red('Could not open whatsapp web, most likely got browser upgrade message....'));
         process.exit();
       }
