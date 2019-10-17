@@ -18,7 +18,7 @@ module.exports = {
     ////////////////////////////////////////////////////////////////
 
     // Number of milli seconds to check for new messages
-    check_message_interval: 1,
+    check_message_interval: 1000,
 
     // If true, your last message sent will be notified when read by other user
     read_receipts: true,
