@@ -26,6 +26,7 @@ if (!process.argv[2]) {
 /////////////////////////////////////////////
 // get user from command line argument
 let user = '';
+let selectorNewMessage=null;
 
 // because a username can contain first and last name/spaces, etc
 for (let i = 2; i <= 5; i++) {
@@ -360,14 +361,18 @@ process.on("unhandledRejection", (reason, p) => {
     async function checkNewMessagesAllUsers() {
       let name = await getCurrentUserName();
 
-      let user = await page.evaluate((selector) => {
+      let new_message_selector = await getSelectorNewMessage();
 
-        let nodes = document.querySelectorAll(selector);
-        let el = nodes[0];
+      let user = await page.evaluate((selector_newMessage,selector_newMessageUser) => {
 
-        return el ? el.innerText : '';
-      }, selector.new_message_user);
+    	  let nodes = document.querySelectorAll(selector_newMessage);
 
+    	  let el = nodes[0].parentNode.parentNode.parentNode.parentNode.parentNode.querySelector(selector_newMessageUser);
+
+    	  return el ? el.innerText : '';
+
+      }, new_message_selector, selector.new_message_user);
+  
       if (user && user != name) {
         let message = 'You have a new message by "' + user + '". Switch to that user to see the message.';
 
@@ -382,6 +387,35 @@ process.on("unhandledRejection", (reason, p) => {
       }
     }
 
+  /**
+    Get the css selector for new messages all users
+  */
+    async function getSelectorNewMessage(){
+    	if (selectorNewMessage==null){
+    		let classname = await page.evaluate((selector) => {
+    			let nodes = document.querySelectorAll(selector);
+        
+    			for (let i = 0; i <= nodes.length; i++) {
+    				var style = window.getComputedStyle(nodes[i]);
+    				var borderRadius = style.getPropertyValue('border-radius');
+    				if (borderRadius=='12px')
+    					return nodes[i].className;
+    			}
+
+    			return null;
+    		}, selector.new_message_count);
+    		if (classname==null)
+    			console.log(logSymbols.warning, chalk.bgRed('Not yet found a kind of notification of new messages'));
+    		else{
+    			selectorNewMessage=selector.new_message.replace('XXXXX', classname);
+    			console.log(logSymbols.info, chalk.bgRed('It was generated selector of notification of new messages: '+selectorNewMessage));
+    		}
+    		
+    	}
+
+        return selectorNewMessage;
+    }
+    
     // prints on console
     function print(message, color = null) {
 

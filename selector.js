@@ -20,6 +20,10 @@ module.exports = {
     user_name: '#main > header span[title]',
 
     // checks if there are new messages by any users
-    new_message_user: '#pane-side div.CxUIE span[title]'
+
+    new_message: '#pane-side span.XXXXX',
+    new_message_user: 'span[title]',
+    new_message_count: "#pane-side span",
+ //   new_message_user_pic_url: 'img[src^="https://web.whatsapp.com/pp"]'
 
 }
