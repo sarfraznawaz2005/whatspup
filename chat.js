@@ -357,32 +357,48 @@ process.on("unhandledRejection", (reason, p) => {
 
     }
 
+    async function getPhoneNumber(){
+    	new_message_user_pic_url
+    }
+    
     // checks for any new messages sent by all other users
     async function checkNewMessagesAllUsers() {
       let name = await getCurrentUserName();
 
       let new_message_selector = await getSelectorNewMessage();
 
-      let user = await page.evaluate((selector_newMessage,selector_newMessageUser) => {
+      let user = await page.evaluate((selector_newMessage,selector_newMessageUser,selector_newMessageUserPicUrl) => {
 
     	  let nodes = document.querySelectorAll(selector_newMessage);
 
     	  let el = nodes[0].parentNode.parentNode.parentNode.parentNode.parentNode.querySelector(selector_newMessageUser);
 
-    	  return el ? el.innerText : '';
+    	  let name=el ? el.innerText : '';
+    	  
+    	  el=nodes[0].parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.querySelector(selector_newMessageUserPicUrl);
+    	  let number='';
+    	  if (el && el.hasAttribute('src')){
+    	   let arr=/&u=([0-9]+)/g.exec(el.getAttribute('src'));
+    	   if (arr[1])
+    		   number=arr[1]
+    	  }
+    	  return [name,number];
 
-      }, new_message_selector, selector.new_message_user);
+      }, new_message_selector, selector.new_message_user,selector.new_message_user_pic_url);
   
-      if (user && user != name) {
-        let message = 'You have a new message by "' + user + '". Switch to that user to see the message.';
+      if (user[0] && user[0] != name) {
 
-        if (last_received_message_other_user != message) {
-          print('\n' + message, config.received_message_color_new_user);
 
-          // show notification
-          notify(user, message);
+        if (last_received_message_other_user != user[0]) {
+ 
+        	let message = 'You have a new message by "' + user[0]+";"+user[1] + '". Switch to that user to see the message.';
+          
+        	print('\n' + message, config.received_message_color_new_user);
 
-          last_received_message_other_user = message;
+        	// show notification
+        	notify(user[0]+";"+user[1], message);
+
+        	last_received_message_other_user = user[0];
         }
       }
     }

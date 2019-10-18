@@ -24,6 +24,6 @@ module.exports = {
     new_message: '#pane-side span.XXXXX',
     new_message_user: 'span[title]',
     new_message_count: "#pane-side span",
- //   new_message_user_pic_url: 'img[src^="https://web.whatsapp.com/pp"]'
+    new_message_user_pic_url: '#pane-side img[src^="https://web.whatsapp.com/pp"]'
 
 }
