@@ -205,9 +205,11 @@ process.on("unhandledRejection", (reason, p) => {
       let parts = message.split('\n');
 
       for (var i = 0; i < parts.length; i++) {
+        if (i > 0) {
         await page.keyboard.down('Shift');
         await page.keyboard.press('Enter');
         await page.keyboard.up('Shift');
+        }
 
         await page.keyboard.type(parts[i]);
       }
