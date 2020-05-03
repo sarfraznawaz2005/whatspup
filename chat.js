@@ -180,6 +180,13 @@ process.on("unhandledRejection", (reason, p) => {
       let user_chat_selector = selector.user_chat;
       user_chat_selector = user_chat_selector.replace('XXX', user);
 
+      // type user into search to avoid scrolling to find hidden elements
+      await page.click(selector.search_box)
+      // make sure it's empty
+      await page.evaluate(() => document.execCommand( 'selectall', false, null ))
+      await page.keyboard.press("Backspace");
+      // find user
+      await page.keyboard.type(user)
       await page.waitFor(user_chat_selector);
       await page.click(user_chat_selector);
       await page.click(selector.chat_input);
