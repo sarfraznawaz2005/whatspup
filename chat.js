@@ -206,9 +206,9 @@ process.on("unhandledRejection", (reason, p) => {
 
       for (var i = 0; i < parts.length; i++) {
         if (i > 0) {
-        await page.keyboard.down('Shift');
-        await page.keyboard.press('Enter');
-        await page.keyboard.up('Shift');
+          await page.keyboard.down('Shift');
+          await page.keyboard.press('Enter');
+          await page.keyboard.up('Shift');
         }
 
         await page.keyboard.type(parts[i]);
@@ -242,8 +242,8 @@ process.on("unhandledRejection", (reason, p) => {
     }
 
     // read user's name from conversation thread
-    async function getCurrentUserName() {
-      return await page.evaluate((selector) => {
+    function getCurrentUserName() {
+      return page.evaluate((selector) => {
         let el = document.querySelector(selector);
 
         return el ? el.innerText : '';
