@@ -73,6 +73,8 @@ process.on("unhandledRejection", (reason, p) => {
       headless: headless,
       // executablePath: executablePath,
       userDataDir: tmpPath,
+      // handle SIGINT below
+      handleSIGINT: false,
       ignoreHTTPSErrors: true,
       args: [
         '--log-level=3', // fatal only
@@ -91,7 +93,8 @@ process.on("unhandledRejection", (reason, p) => {
         '--enable-features=NetworkService',
         '--disable-setuid-sandbox',
         '--no-sandbox'
-      ]
+      ],
+      ignoreDefaultArgs: ['--enable-automation'],
     });
 
     const page = await browser.newPage();
@@ -103,6 +106,14 @@ process.on("unhandledRejection", (reason, p) => {
     page.on('request', (request) => {
       request.continue();
     });
+
+    // close browser on exit
+    process.on('SIGINT', () => 
+      browser
+        .close()
+        .then(() => process.exit(0))
+        .catch(() => process.exit(0))
+    )
 
     print(gradient.rainbow('Initializing...\n'));
 
