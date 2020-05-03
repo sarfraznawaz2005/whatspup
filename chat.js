@@ -10,7 +10,7 @@ const gradient = require('gradient-string');
 const logSymbols = require('log-symbols');
 const ansiEscapes = require('ansi-escapes');
 const path = require('path');
-const findChrome = require('./find_chrome');
+// const findChrome = require('./find_chrome');
 
 const config = require('./config.js');
 const selector = require('./selector.js');
@@ -63,7 +63,7 @@ process.on("unhandledRejection", (reason, p) => {
     let sentMessages = [];
     //////////////////////////////////////////////    
 
-    const executablePath = findChrome().pop() || null;
+    // const executablePath = findChrome().pop() || null;
     const tmpPath = path.resolve(__dirname, config.data_dir);
     const networkIdleTimeout = 30000;
     const stdin = process.stdin;
@@ -71,8 +71,10 @@ process.on("unhandledRejection", (reason, p) => {
 
     const browser = await puppeteer.launch({
       headless: headless,
-      //executablePath: executablePath,
+      // executablePath: executablePath,
       userDataDir: tmpPath,
+      // handle SIGINT below
+      handleSIGINT: false,
       ignoreHTTPSErrors: true,
       args: [
         '--log-level=3', // fatal only
@@ -91,7 +93,8 @@ process.on("unhandledRejection", (reason, p) => {
         '--enable-features=NetworkService',
         '--disable-setuid-sandbox',
         '--no-sandbox'
-      ]
+      ],
+      ignoreDefaultArgs: ['--enable-automation'],
     });
 
     const page = await browser.newPage();
@@ -103,6 +106,14 @@ process.on("unhandledRejection", (reason, p) => {
     page.on('request', (request) => {
       request.continue();
     });
+
+    // close browser on exit
+    process.on('SIGINT', () => 
+      browser
+        .close()
+        .then(() => process.exit(0))
+        .catch(() => process.exit(0))
+    )
 
     print(gradient.rainbow('Initializing...\n'));
 
@@ -169,6 +180,13 @@ process.on("unhandledRejection", (reason, p) => {
       let user_chat_selector = selector.user_chat;
       user_chat_selector = user_chat_selector.replace('XXX', user);
 
+      // type user into search to avoid scrolling to find hidden elements
+      await page.click(selector.search_box)
+      // make sure it's empty
+      await page.evaluate(() => document.execCommand( 'selectall', false, null ))
+      await page.keyboard.press("Backspace");
+      // find user
+      await page.keyboard.type(user)
       await page.waitFor(user_chat_selector);
       await page.click(user_chat_selector);
       await page.click(selector.chat_input);
@@ -187,9 +205,11 @@ process.on("unhandledRejection", (reason, p) => {
       let parts = message.split('\n');
 
       for (var i = 0; i < parts.length; i++) {
-        await page.keyboard.down('Shift');
-        await page.keyboard.press('Enter');
-        await page.keyboard.up('Shift');
+        if (i > 0) {
+          await page.keyboard.down('Shift');
+          await page.keyboard.press('Enter');
+          await page.keyboard.up('Shift');
+        }
 
         await page.keyboard.type(parts[i]);
       }
@@ -222,8 +242,8 @@ process.on("unhandledRejection", (reason, p) => {
     }
 
     // read user's name from conversation thread
-    async function getCurrentUserName() {
-      return await page.evaluate((selector) => {
+    function getCurrentUserName() {
+      return page.evaluate((selector) => {
         let el = document.querySelector(selector);
 
         return el ? el.innerText : '';
