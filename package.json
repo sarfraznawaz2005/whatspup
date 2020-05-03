@@ -21,5 +21,6 @@
     "node-notifier": "^5.1.2",
     "puppeteer": "^1.0.0",
     "winston": "^2.4.0"
-  }
+  },
+  "bin": "chat.js"
 }
