@@ -18,7 +18,7 @@
     "chalk": "^2.3.0",
     "gradient-string": "^1.0.0",
     "log-symbols": "^2.1.0",
-    "node-notifier": "^5.1.2",
+    "node-notifier": "^8.0.1",
     "puppeteer": "^1.0.0",
     "winston": "^2.4.0"
   },
