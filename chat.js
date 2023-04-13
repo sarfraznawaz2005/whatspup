@@ -10,7 +10,7 @@ const gradient = require('gradient-string');
 const logSymbols = require('log-symbols');
 const ansiEscapes = require('ansi-escapes');
 const path = require('path');
-// const findChrome = require('./find_chrome');
+const findChrome = require('./find_chrome');
 
 const config = require('./config.js');
 const selector = require('./selector.js');
@@ -63,7 +63,7 @@ process.on("unhandledRejection", (reason, p) => {
     let sentMessages = [];
     //////////////////////////////////////////////    
 
-    // const executablePath = findChrome().pop() || null;
+    const executablePath = findChrome().pop() || null;
     const tmpPath = path.resolve(__dirname, config.data_dir);
     const networkIdleTimeout = 30000;
     const stdin = process.stdin;
@@ -71,7 +71,7 @@ process.on("unhandledRejection", (reason, p) => {
 
     const browser = await puppeteer.launch({
       headless: headless,
-      // executablePath: executablePath,
+      executablePath: executablePath,
       userDataDir: tmpPath,
       // handle SIGINT below
       handleSIGINT: false,
@@ -81,18 +81,12 @@ process.on("unhandledRejection", (reason, p) => {
         //'--start-maximized',
         '--no-default-browser-check',
         '--disable-infobars',
-        '--disable-web-security',
-        '--disable-site-isolation-trials',
         '--no-experiments',
         '--ignore-gpu-blacklist',
-        '--ignore-certificate-errors',
-        '--ignore-certificate-errors-spki-list',
         '--disable-gpu',
         '--disable-extensions',
         '--disable-default-apps',
         '--enable-features=NetworkService',
-        '--disable-setuid-sandbox',
-        '--no-sandbox'
       ],
       ignoreDefaultArgs: ['--enable-automation'],
     });
@@ -189,7 +183,8 @@ process.on("unhandledRejection", (reason, p) => {
       await page.keyboard.type(user)
       await page.waitFor(user_chat_selector);
       await page.click(user_chat_selector);
-      await page.click(selector.chat_input);
+	  await page.click(selector.chat_input);
+	  
       let name = getCurrentUserName();
 
       if (name) {

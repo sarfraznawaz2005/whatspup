@@ -8,7 +8,7 @@ module.exports = {
     search_box: '#side [contenteditable]',
 
     // textbox selector where message will be typed
-    chat_input: '#main > footer div.selectable-text[contenteditable]',
+    chat_input: '#main [data-testid="conversation-compose-box-input"]',
 
     // used to read last message sent by other person
     last_message: '#main div.message-in',
@@ -20,7 +20,7 @@ module.exports = {
     last_message_read: '#main div.message-out span[data-icon]:last-child',
 
     // gets username for conversation thread
-    user_name: '#main > header span[title]',
+    user_name: '#main [data-testid="conversation-info-header-chat-title"]',
 
     // checks if there are new messages by any users
 

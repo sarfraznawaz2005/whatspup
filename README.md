@@ -21,7 +21,8 @@ Of course, it is not possible to send/receive picture messages from command line
 ## Requirements ##
 
 - Node v8+
-- puppeteer v0.13.0+
+- puppeteer v1.0.0+
+- Chrome browser
 
 Tested on Windows with Node v8.9.1 and puppeteer v0.13.0
 
